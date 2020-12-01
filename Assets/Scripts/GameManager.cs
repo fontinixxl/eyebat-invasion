@@ -21,7 +21,6 @@ public class GameManager : MonoBehaviour
     public int maxTime = 30;
     private int playerPoints;
 
-    [SerializeField]
     private float spawnRate = 3.0f;
     [SerializeField]
     private float minSpawnRate;

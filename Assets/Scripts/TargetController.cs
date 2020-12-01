@@ -9,11 +9,12 @@ public class TargetController : MonoBehaviour
     private Rigidbody targetRb;
     private bool hasCollided;
     private int direction;
-
+    private Animator animator;
     // Start is called before the first frame update
     void Start()
     {
         hasCollided = false;
+        animator = GetComponent<Animator>();
         targetRb = GetComponent<Rigidbody>();
         // Adjust direction so the target allways go towards the playGround (camera)
         direction = transform.position.x > 0 ? -1: 1;
@@ -31,6 +32,8 @@ public class TargetController : MonoBehaviour
     private void OnMouseDown()
     {
         targetRb.useGravity = true;
+        // Disable flying animation once the target is hit
+        animator.enabled = false;
     }
 
     private void OnCollisionEnter(Collision collision)

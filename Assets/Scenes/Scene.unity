@@ -1286,18 +1286,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e316e25782b6ec747af8de690e00e2bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetPrefab: {fileID: 6793176527101027886, guid: 520c90ba30f35ee40a82159d598fa795,
+  targetPrefab: {fileID: 4877742354643689561, guid: 80bfcbd3db5c3474baa10ad9e00d78d6,
     type: 3}
   gameOverText: {fileID: 1556867651}
   totalPointsText: {fileID: 1703267170}
   CurrentPointsText: {fileID: 598753586}
   timerText: {fileID: 329945481}
   restartButton: {fileID: 631564816}
-  spawnRangeYMin: 8
-  spawnRangeYMax: 14
+  spawnRangeYMin: 7.5
+  spawnRangeYMax: 12
   spawnposX: -14
   maxTime: 30
-  spawnRate: 3
   minSpawnRate: 1
   maxSpawnRate: 3
 --- !u!1001 &1044835210

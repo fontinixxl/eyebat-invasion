@@ -21,13 +21,13 @@ public class GameManager : MonoBehaviour
     public int maxTime = 30;
     private int playerPoints;
 
-    private float spawnRate = 3.0f;
     [SerializeField]
     private float minSpawnRate;
     [SerializeField]
     private float maxSpawnRate;
     private readonly int[] spawnDirections = new int[2] { -1, 1 };
     private IEnumerator spawnCoroutine;
+    private bool hasTimerCountdownStarted;
 
     // Start is called before the first frame update
     void Start()
@@ -35,10 +35,9 @@ public class GameManager : MonoBehaviour
         //Find the player Object on the Hierarchy and get its controller script
         playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         playerPoints = 0;
-        spawnRate = maxSpawnRate;
+        hasTimerCountdownStarted = false;
         spawnCoroutine = SpawnTarget();
         StartCoroutine(spawnCoroutine);
-        StartCoroutine(TimerCountDown(maxTime));
     }
 
     IEnumerator SpawnTarget()
@@ -50,22 +49,35 @@ public class GameManager : MonoBehaviour
             float spawnPointY = Random.Range(spawnRangeYMin, spawnRangeYMax);
             Vector3 spawnPosition = new Vector3(spawnPointX, spawnPointY, 0);
 
-            yield return new WaitForSeconds(spawnRate);
             Instantiate(targetPrefab, spawnPosition, targetPrefab.transform.rotation);
-            spawnRate = Random.Range(minSpawnRate, maxSpawnRate);
+            float spawnRate = Random.Range(minSpawnRate, maxSpawnRate);
+            
+            // TODO: figure out how to call the timerCountdown outside the SpawnTarget
+            // So it's not checking every iteration if the coroutine has started.
+            
+            // Start Timer Countdown once the first target has been spawned
+            if (!hasTimerCountdownStarted)
+            {
+                StartCoroutine(TimerCountDown());
+            }
+            yield return new WaitForSeconds(spawnRate);
         }
     }
 
-    IEnumerator TimerCountDown(int timeLeft)
+    IEnumerator TimerCountDown()
     {
+        // Set to true so the coroutine will be started once
+        hasTimerCountdownStarted = true;
+
+        int timeLeft = maxTime;
         while (timeLeft > 0)
         {
-            UpdateTimer(timeLeft);
+            DisplayTimer(timeLeft);
             yield return new WaitForSeconds(1);
             timeLeft--;
         }
         // Just to show the zero
-        UpdateTimer(timeLeft);
+        DisplayTimer(timeLeft);
 
         // Call Game Over when the timer is over!
         GameOver();
@@ -107,7 +119,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void UpdateTimer(int timeLeft)
+    private void DisplayTimer(int timeLeft)
     {
         timerText.text = "Timer: " + timeLeft;
     }

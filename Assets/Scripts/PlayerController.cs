@@ -13,11 +13,6 @@ public class PlayerController : MonoBehaviour
     // Max distance the player can move on the X axis from the zero position.
     private readonly float xRange = 12.0f;
 
-    private void Start()
-    {
-        
-    }
-
     private void Update()
     {
         // Check for left and right bounds

@@ -7,11 +7,27 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public GameManager gameManager;
+
+    public static event Action<int> EnemyCaughtEvent;
+
     [SerializeField]
     private float horizontalSpeed = 5.0f;
     private float horizontalInput;
     // Max distance the player can move on the X axis from the zero position.
     private readonly float xRange = 12.0f;
+    private int totalPoint;
+
+    private void Start()
+    {
+        HUDController.TimesUpEvent += HUDController_TimesUpEvent;
+        totalPoint = 0;
+    }
+
+    // Disable MonoBehaviour once the timer is over
+    private void HUDController_TimesUpEvent()
+    {
+        enabled = false;
+    }
 
     private void Update()
     {
@@ -37,7 +53,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        gameManager.AddPointToPlayer();
+        totalPoint++;
+
+        EnemyCaughtEvent?.Invoke(totalPoint);
+
         Destroy(other.gameObject);
     }
 }

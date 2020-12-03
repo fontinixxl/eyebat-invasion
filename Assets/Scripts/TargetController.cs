@@ -11,7 +11,6 @@ public class TargetController : MonoBehaviour
     private int direction;
     private Animator animator;
 
-    // Start is called before the first frame update
     void Start()
     {
         hasCollided = false;

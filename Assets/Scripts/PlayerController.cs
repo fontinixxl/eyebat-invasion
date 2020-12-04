@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,10 +8,8 @@ public class PlayerController : MonoBehaviour
     public static event Action<int> EnemyCaughtEvent;
 
     [SerializeField]
-    private float horizontalSpeed = 5.0f;
-    private float horizontalInput;
-    // Max distance the player can move on the X axis from the zero position.
-    private readonly float xRange = 12.0f;
+    private float speed = 10.0f;
+    private float horizontalMovement;
     private int totalPoint;
 
     private void Start()
@@ -31,24 +26,23 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        // Check for left and right bounds
-        if (transform.position.x < -xRange)
-        {
-            transform.position = new Vector3(-xRange, transform.position.y, transform.position.z);
-        }
-
-        if (transform.position.x > xRange)
-        {
-            transform.position = new Vector3(xRange, transform.position.y, transform.position.z);
-        }
-
-        horizontalInput = Input.GetAxis("Horizontal");
-
+        MovePlayer();
     }
 
-    private void FixedUpdate()
+    private void MovePlayer()
     {
-        transform.Translate(Vector3.right * horizontalInput * horizontalSpeed * Time.deltaTime);
+        horizontalMovement = Input.GetAxis("Horizontal");
+
+        if (Mathf.Abs(horizontalMovement) > Mathf.Epsilon)
+        {
+            horizontalMovement = horizontalMovement * Time.deltaTime * speed;
+            horizontalMovement += transform.position.x;
+
+            float limit =
+                Mathf.Clamp(horizontalMovement, ScreenBounds.Left, ScreenBounds.Right);
+
+            transform.position = new Vector3(limit, transform.position.y, transform.position.z);
+        }
     }
 
     private void OnTriggerEnter(Collider other)

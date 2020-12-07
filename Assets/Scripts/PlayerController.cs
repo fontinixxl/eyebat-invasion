@@ -14,19 +14,22 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        HUDController.TimesUpEvent += HUDController_TimesUpEvent;
+        HUDController.RestartGameEvent += HUDController_RestartGameEvent;
         totalPoint = 0;
     }
 
-    // Disable MonoBehaviour once the timer is over
-    private void HUDController_TimesUpEvent()
+    private void HUDController_RestartGameEvent()
     {
-        enabled = false;
+        totalPoint = 0;
+        transform.position = Vector3.zero;
     }
 
     private void Update()
     {
-        MovePlayer();
+        if (GameManager.Instance.IsGameActive)
+        {
+            MovePlayer();
+        }
     }
 
     private void MovePlayer()

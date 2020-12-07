@@ -4,6 +4,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
+    public static GameManager Instance { get { return instance; } }
+
     public GameObject targetPrefab;
     public GameObject despawnSensor;
 
@@ -19,21 +22,45 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private float maxSpawnRate = 3;
     private readonly int[] spawnDirections = new int[2] { -1, 1 };
+    private bool isGameActive;
+    public bool IsGameActive
+    {
+        get { return isGameActive; }
+    }
+
+    private void Awake()
+    {
+        // Create a Singleton instance of the GameManager
+        if (instance != null && instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        // Subscrive to the TimesUpEvent so we can Stop the Game from the Manager.
+        isGameActive = false;
+
         HUDController.TimesUpEvent += GameOver;
+        HUDController.StartGameEvent += StartGame;
+        HUDController.RestartGameEvent += RestartGame;
 
         // TODO: Fix target broken pivot that force me to make weird math to figure out corret spawnRange on Y
         spawnRangeYMin = (ScreenBounds.Height / 2);
         spawnRangeYMax = ScreenBounds.Height - spawnYOffset - HUDOffset;
 
         SpawnLeftRightSensor();
+    }
 
+    private void StartGame()
+    {
+        isGameActive = true;
         StartCoroutine("SpawnTarget");
-
     }
 
     private void SpawnLeftRightSensor()
@@ -50,7 +77,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator SpawnTarget()
     {
-        while (true)
+        while (isGameActive)
         {
             int direction = spawnDirections[Random.Range(0, spawnDirections.Length)];
             float spawnXComponent = (ScreenBounds.Width + offScreenXOffset) * direction;
@@ -66,9 +93,10 @@ public class GameManager : MonoBehaviour
     }
 
     // Stop game logic
+    // Called by the event TimesUp in the HUDController script
     public void GameOver()
     {
-        StopCoroutine("SpawnTarget");
+        isGameActive = false;
         RemoveRemainingTargets();
     }
 
@@ -83,8 +111,9 @@ public class GameManager : MonoBehaviour
     }
 
     // Restart game by reloading the scene
-    public void RestartGame()
+    private void RestartGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        isGameActive = true;
+        StartCoroutine(SpawnTarget());
     }
 }

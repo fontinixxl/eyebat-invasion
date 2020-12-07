@@ -10,11 +10,10 @@ public class HUDController : MonoBehaviour
 
     [Header("UI Components")]
     [Space]
-    //public Text totalScoreText;
     public Text scoreText;
-    public Button restartButton;
-    public GameObject gameOverText;
-
+    public GameObject gameOverScreen;
+    public GameObject titleScreen;
+    private Button restartButton;
 
     [Header("Timer Components")]
     [Space]
@@ -23,6 +22,8 @@ public class HUDController : MonoBehaviour
     private int maxTime = 30;
 
     public static event Action TimesUpEvent;
+    public static event Action StartGameEvent;
+    public static event Action RestartGameEvent;
 
     #endregion
 
@@ -30,15 +31,32 @@ public class HUDController : MonoBehaviour
     void Start()
     {
         PlayerController.EnemyCaughtEvent += UpdateScore;
+        
+        restartButton = gameOverScreen.GetComponentInChildren<Button>();
+        restartButton.onClick.AddListener(OnClickRestartButton);
+    }
 
+    // Called by the Start Button Event
+    public void StartGameLoop()
+    {
+        titleScreen.SetActive(false);
+        StartGameEvent?.Invoke();
+        StartCoroutine(TimerCountDown());
+    }
+    private void OnClickRestartButton()
+    {
+        gameOverScreen.SetActive(false);
+        UpdateScore(0);
+        UpdateTimer(maxTime);
+        RestartGameEvent?.Invoke();
         StartCoroutine(TimerCountDown());
     }
 
+    // TODO: Consider moving Coroutine to GameManager
     IEnumerator TimerCountDown()
     {
         int timeLeft = maxTime;
 
-        yield return new WaitForSeconds(1);
         while (timeLeft > 0)
         {
             UpdateTimer(timeLeft);
@@ -56,17 +74,8 @@ public class HUDController : MonoBehaviour
 
     private void DisplayGameOverMenu()
     {
-        gameOverText.gameObject.SetActive(true);
-        //DisplayTotalScore();
-        //restartButton.gameObject.SetActive(true);
+        gameOverScreen.SetActive(true);
     }
-    /*
-    private void DisplayTotalScore(int score)
-    {
-        totalScoreText.text = score + " Points";
-        totalScoreText.gameObject.SetActive(true);
-    }
-    */
 
     private void UpdateTimer(int timeLeft)
     {

@@ -37,14 +37,6 @@ public class TargetController : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         hasCollided = true;
-        // Stop moving whenever it collides with any other object
-        /*
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            Debug.Log("Hit Ground");
-            hasCollided = true;
-        }
-        */
     }
 
     private void OnTriggerEnter(Collider other)

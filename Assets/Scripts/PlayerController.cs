@@ -4,24 +4,21 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public GameManager gameManager;
-
+    public AudioClip enemyCaughtSound;
     public static event Action<int> EnemyCaughtEvent;
+
+    public ParticleSystem dirtParticleRight;
+    public ParticleSystem dirtParticleLeft;
 
     [SerializeField]
     private float speed = 10.0f;
-    private float horizontalMovement;
     private int totalPoint;
-
+    
     private void Start()
     {
+        HUDController.TimesUpEvent += HUDController_TimesUpEvent;
         HUDController.RestartGameEvent += HUDController_RestartGameEvent;
         totalPoint = 0;
-    }
-
-    private void HUDController_RestartGameEvent()
-    {
-        totalPoint = 0;
-        transform.position = Vector3.zero;
     }
 
     private void Update()
@@ -34,10 +31,12 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer()
     {
-        horizontalMovement = Input.GetAxis("Horizontal");
+        float horizontalMovement = Input.GetAxis("Horizontal");
 
         if (Mathf.Abs(horizontalMovement) > Mathf.Epsilon)
         {
+            GenerateParticles(horizontalMovement);
+
             horizontalMovement = horizontalMovement * Time.deltaTime * speed;
             horizontalMovement += transform.position.x;
 
@@ -46,10 +45,43 @@ public class PlayerController : MonoBehaviour
 
             transform.position = new Vector3(limit, transform.position.y, transform.position.z);
         }
+        else
+        {
+            StopDirtParticles();
+        }
+    }
+
+    private void GenerateParticles(float horizontalMovement)
+    {
+        if (horizontalMovement > 0.01f && !dirtParticleLeft.isPlaying)
+        {
+            dirtParticleLeft.Play();
+        }
+        else if (horizontalMovement < -0.01f && !dirtParticleRight.isPlaying)
+        {
+            dirtParticleRight.Play();
+        }
+    }
+    private void StopDirtParticles()
+    {
+        dirtParticleLeft.Stop();
+        dirtParticleRight.Stop();
+    }
+
+    private void HUDController_TimesUpEvent()
+    {
+        StopDirtParticles();
+    }
+
+    private void HUDController_RestartGameEvent()
+    {
+        totalPoint = 0;
+        transform.position = Vector3.zero;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        GameManager.Instance.AudioSource.PlayOneShot(enemyCaughtSound, 1f);
         totalPoint++;
 
         EnemyCaughtEvent?.Invoke(totalPoint);

@@ -10,6 +10,12 @@ public class GameManager : MonoBehaviour
     public GameObject targetPrefab;
     public GameObject despawnSensor;
 
+    private AudioSource audioSource;
+    public  AudioSource AudioSource
+    {
+        get { return audioSource; }
+    }
+
     private float spawnRangeYMin;
     private float spawnRangeYMax;
     // Offset distance off-screen on the X coordinate where the enemy will be spawning
@@ -44,11 +50,13 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+
         isGameActive = false;
 
         HUDController.TimesUpEvent += GameOver;
         HUDController.StartGameEvent += StartGame;
-        HUDController.RestartGameEvent += RestartGame;
+        HUDController.RestartGameEvent += StartGame;
 
         // TODO: Fix target broken pivot that force me to make weird math to figure out corret spawnRange on Y
         spawnRangeYMin = (ScreenBounds.Height / 2);
@@ -59,6 +67,7 @@ public class GameManager : MonoBehaviour
 
     private void StartGame()
     {
+        audioSource.Play();
         isGameActive = true;
         StartCoroutine("SpawnTarget");
     }
@@ -96,6 +105,7 @@ public class GameManager : MonoBehaviour
     // Called by the event TimesUp in the HUDController script
     public void GameOver()
     {
+        audioSource.Stop();
         isGameActive = false;
         RemoveRemainingTargets();
     }
@@ -108,12 +118,5 @@ public class GameManager : MonoBehaviour
         {
             Destroy(enemy.gameObject);
         }
-    }
-
-    // Restart game by reloading the scene
-    private void RestartGame()
-    {
-        isGameActive = true;
-        StartCoroutine(SpawnTarget());
     }
 }

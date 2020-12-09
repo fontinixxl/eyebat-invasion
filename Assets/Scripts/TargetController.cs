@@ -2,6 +2,7 @@
 
 public class TargetController : MonoBehaviour
 {
+    public AudioClip hitSound;
     [SerializeField]
     private float speed = 6.0f;
     private Rigidbody targetRb;
@@ -29,6 +30,7 @@ public class TargetController : MonoBehaviour
     // Once the target is hit, enable gravity so it will start falling down
     private void OnMouseDown()
     {
+        GameManager.Instance.AudioSource.PlayOneShot(hitSound, 1f);
         targetRb.useGravity = true;
         // Disable flying animation once the target is hit
         animator.enabled = false;

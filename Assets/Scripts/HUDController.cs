@@ -20,6 +20,7 @@ public class HUDController : MonoBehaviour
     public Text timerText;
     [SerializeField]
     private int maxTime = 30;
+    public AudioClip gameOverSound;
 
     public static event Action TimesUpEvent;
     public static event Action StartGameEvent;
@@ -74,6 +75,7 @@ public class HUDController : MonoBehaviour
 
     private void DisplayGameOverMenu()
     {
+        GameManager.Instance.AudioSource.PlayOneShot(gameOverSound);
         gameOverScreen.SetActive(true);
     }
 

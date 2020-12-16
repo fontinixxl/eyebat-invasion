@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,8 +19,9 @@ public class GameManager : MonoBehaviour
     private float spawnRangeYMax;
     // Offset distance off-screen on the X coordinate where the enemy will be spawning
     private readonly float offScreenXOffset = 1;
-    private readonly float spawnYOffset = 2;
-    private readonly float HUDOffset = 1.5f;
+    private readonly float spawnYOffset = 2.5f;
+    // TODO: Remove - it was used when the HUD was located on the top to avoid overlaping with the enemies
+    //private readonly float HUDOffset = 1.5f;
 
     [SerializeField]
     private float minSpawnRate = 1;
@@ -54,13 +54,14 @@ public class GameManager : MonoBehaviour
 
         isGameActive = false;
 
-        HUDController.TimesUpEvent += GameOver;
-        HUDController.StartGameEvent += StartGame;
-        HUDController.RestartGameEvent += StartGame;
+        UIController.TimesUpEvent += GameOver;
+        UIController.StartGameEvent += StartGame;
+        UIController.RestartGameEvent += StartGame;
 
         // TODO: Fix target broken pivot that force me to make weird math to figure out corret spawnRange on Y
         spawnRangeYMin = (ScreenBounds.Height / 2);
-        spawnRangeYMax = ScreenBounds.Height - spawnYOffset - HUDOffset;
+        spawnRangeYMax = ScreenBounds.Height - spawnYOffset;
+        //Debug.Log("max Y spawn = " + spawnRangeYMax);
 
         SpawnLeftRightSensor();
     }

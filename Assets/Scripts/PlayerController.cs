@@ -16,8 +16,8 @@ public class PlayerController : MonoBehaviour
     
     private void Start()
     {
-        HUDController.TimesUpEvent += HUDController_TimesUpEvent;
-        HUDController.RestartGameEvent += HUDController_RestartGameEvent;
+        UIController.TimesUpEvent += HUDController_TimesUpEvent;
+        UIController.RestartGameEvent += HUDController_RestartGameEvent;
         totalPoint = 0;
     }
 

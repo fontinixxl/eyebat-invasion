@@ -4,18 +4,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class HUDController : MonoBehaviour
+public class UIController : MonoBehaviour
 {
     #region Field Declarations
 
     [Header("UI Components")]
     [Space]
     public Text scoreText;
+    public Text totalScoreText;
     public GameObject gameOverScreen;
     public GameObject titleScreen;
     public Button exitButton;
     public Button startButton;
-    private Button restartButton;
+    public Button restartButton;
 
     [Header("Timer Components")]
     [Space]
@@ -23,6 +24,8 @@ public class HUDController : MonoBehaviour
     [SerializeField]
     private int maxTime = 30;
     public AudioClip gameOverSound;
+
+    private int totalScore;
 
     public static event Action TimesUpEvent;
     public static event Action StartGameEvent;
@@ -35,9 +38,10 @@ public class HUDController : MonoBehaviour
     {
         startButton.onClick.AddListener(StartGameLoop);
         exitButton.onClick.AddListener(ExitGame);
+
         PlayerController.EnemyCaughtEvent += UpdateScore;
-        
-        restartButton = gameOverScreen.GetComponentInChildren<Button>();
+
+        //restartButton = gameOverScreen.GetComponentInChildren<Button>();
         restartButton.onClick.AddListener(OnClickRestartButton);
     }
 
@@ -80,6 +84,7 @@ public class HUDController : MonoBehaviour
     private void DisplayGameOverMenu()
     {
         GameManager.Instance.AudioSource.PlayOneShot(gameOverSound);
+        totalScoreText.text += " " + totalScore.ToString();
         gameOverScreen.SetActive(true);
     }
 
@@ -90,6 +95,7 @@ public class HUDController : MonoBehaviour
 
     private void UpdateScore(int score)
     {
+        totalScore = score;
         scoreText.text = score.ToString();
     }
 

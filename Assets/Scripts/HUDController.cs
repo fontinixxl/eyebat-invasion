@@ -13,6 +13,8 @@ public class HUDController : MonoBehaviour
     public Text scoreText;
     public GameObject gameOverScreen;
     public GameObject titleScreen;
+    public Button exitButton;
+    public Button startButton;
     private Button restartButton;
 
     [Header("Timer Components")]
@@ -31,6 +33,8 @@ public class HUDController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        startButton.onClick.AddListener(StartGameLoop);
+        exitButton.onClick.AddListener(ExitGame);
         PlayerController.EnemyCaughtEvent += UpdateScore;
         
         restartButton = gameOverScreen.GetComponentInChildren<Button>();
@@ -87,5 +91,11 @@ public class HUDController : MonoBehaviour
     private void UpdateScore(int score)
     {
         scoreText.text = score.ToString();
+    }
+
+    private void ExitGame()
+    {
+        Debug.Log("Exit Game");
+        Application.Quit();
     }
 }

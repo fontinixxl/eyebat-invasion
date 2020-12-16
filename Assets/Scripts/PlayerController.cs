@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     
     private void Start()
     {
-        UIController.TimesUpEvent += HUDController_TimesUpEvent;
+        GameManager.GameOverEvent += GameManager_GameOverEvent;
         UIController.RestartGameEvent += HUDController_RestartGameEvent;
         totalPoint = 0;
     }
@@ -68,7 +68,7 @@ public class PlayerController : MonoBehaviour
         dirtParticleRight.Stop();
     }
 
-    private void HUDController_TimesUpEvent()
+    private void GameManager_GameOverEvent()
     {
         StopDirtParticles();
     }

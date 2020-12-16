@@ -1790,8 +1790,11 @@ MonoBehaviour:
     type: 3}
   despawnSensor: {fileID: 8990001936720017725, guid: 35773709fe07f404f97a69a4a18eb8d5,
     type: 3}
+  uIController: {fileID: 1899638126}
+  gameOverSound: {fileID: 8300000, guid: b02a1f300efeefa4ab8f3a3c6ebf6e98, type: 3}
   minSpawnRate: 1
   maxSpawnRate: 3
+  maxTime: 10
 --- !u!82 &949082929
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3144,7 +3147,6 @@ MonoBehaviour:
   restartButton: {fileID: 1945058439}
   timerText: {fileID: 329945481}
   maxTime: 15
-  gameOverSound: {fileID: 8300000, guid: b02a1f300efeefa4ab8f3a3c6ebf6e98, type: 3}
 --- !u!1 &1945058437
 GameObject:
   m_ObjectHideFlags: 0

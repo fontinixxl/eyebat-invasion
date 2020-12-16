@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,20 +10,20 @@ public class GameManager : MonoBehaviour
 
     public GameObject targetPrefab;
     public GameObject despawnSensor;
+    public UIController UIController;
 
     private AudioSource audioSource;
-    public  AudioSource AudioSource
+    public AudioSource AudioSource
     {
         get { return audioSource; }
     }
+    public AudioClip gameOverSound;
 
     private float spawnRangeYMin;
     private float spawnRangeYMax;
     // Offset distance off-screen on the X coordinate where the enemy will be spawning
     private readonly float offScreenXOffset = 1;
     private readonly float spawnYOffset = 2.5f;
-    // TODO: Remove - it was used when the HUD was located on the top to avoid overlaping with the enemies
-    //private readonly float HUDOffset = 1.5f;
 
     [SerializeField]
     private float minSpawnRate = 1;
@@ -33,6 +35,9 @@ public class GameManager : MonoBehaviour
     {
         get { return isGameActive; }
     }
+    private int maxTime = 30;
+
+    public static event Action GameOverEvent;
 
     private void Awake()
     {
@@ -54,7 +59,6 @@ public class GameManager : MonoBehaviour
 
         isGameActive = false;
 
-        UIController.TimesUpEvent += GameOver;
         UIController.StartGameEvent += StartGame;
         UIController.RestartGameEvent += StartGame;
 
@@ -71,6 +75,7 @@ public class GameManager : MonoBehaviour
         audioSource.Play();
         isGameActive = true;
         StartCoroutine("SpawnTarget");
+        StartCoroutine("TimerCountDown");
     }
 
     private void SpawnLeftRightSensor()
@@ -89,24 +94,44 @@ public class GameManager : MonoBehaviour
     {
         while (isGameActive)
         {
-            int direction = spawnDirections[Random.Range(0, spawnDirections.Length)];
+            int direction = spawnDirections[UnityEngine.Random.Range(0, spawnDirections.Length)];
             float spawnXComponent = (ScreenBounds.Width + offScreenXOffset) * direction;
-            float spawnYComponent = Random.Range(spawnRangeYMin, spawnRangeYMax);
+            float spawnYComponent = UnityEngine.Random.Range(spawnRangeYMin, spawnRangeYMax);
 
             Vector3 spawnPosition = new Vector3(spawnXComponent, spawnYComponent, 0);
 
             Instantiate(targetPrefab, spawnPosition, targetPrefab.transform.rotation);
-            float spawnRate = Random.Range(minSpawnRate, maxSpawnRate);
+            float spawnRate = UnityEngine.Random.Range(minSpawnRate, maxSpawnRate);
 
             yield return new WaitForSeconds(spawnRate);
         }
     }
 
+    IEnumerator TimerCountDown()
+    {
+        int timeLeft = maxTime;
+
+        while (timeLeft > 0)
+        {
+            UIController.UpdateTimerTextElement(timeLeft);
+            yield return new WaitForSeconds(1);
+            timeLeft--;
+        }
+
+        // Just to show the zero
+        UIController.UpdateTimerTextElement(timeLeft);
+
+        GameOver();
+    }
+
     // Stop game logic
-    // Called by the event TimesUp in the HUDController script
     public void GameOver()
     {
+        GameOverEvent?.Invoke();
+
         audioSource.Stop();
+        audioSource.PlayOneShot(gameOverSound);
+        
         isGameActive = false;
         RemoveRemainingTargets();
     }

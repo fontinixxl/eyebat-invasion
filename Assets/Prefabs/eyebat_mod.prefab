@@ -68,6 +68,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitSound: {fileID: 8300000, guid: c461b547b9c507c42b617904589eaa13, type: 3}
   speed: 6
+  scorePoints: 1
 --- !u!54 &4877742354643689560
 Rigidbody:
   m_ObjectHideFlags: 0

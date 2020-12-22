@@ -3,27 +3,18 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public GameManager gameManager;
     public AudioClip enemyCaughtSound;
-    public static event Action<int> EnemyCaughtEvent;
+    public static event Action<int> ScorePointsEvent;
 
     public ParticleSystem dirtParticleRight;
     public ParticleSystem dirtParticleLeft;
 
     [SerializeField]
     private float speed = 10.0f;
-    private int totalPoint;
-    
-    private void Start()
-    {
-        GameManager.GameOverEvent += GameManager_GameOverEvent;
-        UIController.RestartGameEvent += HUDController_RestartGameEvent;
-        totalPoint = 0;
-    }
 
     private void Update()
     {
-        if (GameManager.Instance.IsGameActive)
+        if (GameManager.Instance.CurrentGameState == GameManager.GameState.RUNNING)
         {
             MovePlayer();
         }
@@ -73,18 +64,14 @@ public class PlayerController : MonoBehaviour
         StopDirtParticles();
     }
 
-    private void HUDController_RestartGameEvent()
-    {
-        totalPoint = 0;
-        transform.position = Vector3.zero;
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         GameManager.Instance.AudioSource.PlayOneShot(enemyCaughtSound, 1f);
-        totalPoint++;
 
-        EnemyCaughtEvent?.Invoke(totalPoint);
+        // Get the total points this Enemy is worth for; store and display
+        int pointsToScore = other.gameObject.GetComponentInParent<TargetController>().ScorePoints;
+
+        ScorePointsEvent?.Invoke(pointsToScore);
 
         Destroy(other.gameObject);
     }

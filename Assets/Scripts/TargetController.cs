@@ -10,6 +10,16 @@ public class TargetController : MonoBehaviour
     private int direction;
     private Animator animator;
 
+    [SerializeField]
+    private int scorePoints;
+    public int ScorePoints
+    {
+        get
+        {
+            return scorePoints;
+        }
+    }
+
     void Start()
     {
         hasCollided = false;

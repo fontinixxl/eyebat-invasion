@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-    public static GameManager instance;
-    public static GameManager Instance { get { return instance; } }
+    #region Declarations
+    public enum GameState { PREGAME, RUNNING, GAMEOVER, PAUSED }
 
     public GameObject targetPrefab;
     public GameObject despawnSensor;
-    public UIController UIController;
 
     private AudioSource audioSource;
-    public AudioSource AudioSource
-    {
-        get { return audioSource; }
-    }
+    public AudioSource AudioSource { get { return audioSource; } }
     public AudioClip gameOverSound;
 
     private float spawnRangeYMin;
@@ -24,59 +21,125 @@ public class GameManager : MonoBehaviour
     // Offset distance off-screen on the X coordinate where the enemy will be spawning
     private readonly float offScreenXOffset = 1;
     private readonly float spawnYOffset = 2.5f;
-
-    [SerializeField]
-    private float minSpawnRate = 1;
-    [SerializeField]
-    private float maxSpawnRate = 3;
+    [SerializeField] private float minSpawnRate = 1;
+    [SerializeField] private float maxSpawnRate = 3;
     private readonly int[] spawnDirections = new int[2] { -1, 1 };
-    private bool isGameActive;
-    public bool IsGameActive
+    
+    [SerializeField]private int maxTime = 30;
+    private int _timeLeft;
+    public int TimeLeft { get { return _timeLeft; } }
+    private string _currentLevelName = String.Empty;
+    private GameState _currentGameState = GameState.PREGAME;
+    public GameState CurrentGameState
     {
-        get { return isGameActive; }
+        get { return _currentGameState; }
+        private set { _currentGameState = value; }
     }
-    private int maxTime = 30;
+    public EventGameState OnGameStateChanged;
+    [SerializeField] private int _playerTotalPoints;
+    public int PlayerTotalPoints { get { return _playerTotalPoints; } }
 
-    public static event Action GameOverEvent;
+    #endregion
 
-    private void Awake()
+    #region Initializations
+
+    protected override void Awake()
     {
-        // Create a Singleton instance of the GameManager
-        if (instance != null && instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            instance = this;
-        }
-    }
+        base.Awake();
+        _timeLeft = maxTime;
 
-    // Start is called before the first frame update
+    }
     void Start()
     {
+        DontDestroyOnLoad(gameObject);
+
         audioSource = GetComponent<AudioSource>();
 
-        isGameActive = false;
-
-        UIController.StartGameEvent += StartGame;
-        UIController.RestartGameEvent += StartGame;
+        PlayerController.ScorePointsEvent += HandlePlayerScorePointsEvent;
 
         // TODO: Fix target broken pivot that force me to make weird math to figure out corret spawnRange on Y
         spawnRangeYMin = (ScreenBounds.Height / 2);
         spawnRangeYMax = ScreenBounds.Height - spawnYOffset;
-        //Debug.Log("max Y spawn = " + spawnRangeYMax);
 
         SpawnLeftRightSensor();
+
+        OnGameStateChanged.Invoke(GameState.PREGAME, _currentGameState);
     }
 
-    private void StartGame()
+    private void LoadLevel(string levelName)
     {
-        audioSource.Play();
-        isGameActive = true;
-        StartCoroutine("SpawnTarget");
-        StartCoroutine("TimerCountDown");
+        AsyncOperation ao = SceneManager.LoadSceneAsync(levelName, LoadSceneMode.Additive);
+        if (ao == null)
+        {
+            Debug.LogError("[GameManager] Unable to load level " + levelName);
+            return;
+        }
+
+        ao.completed += OnLoadOperationComplete;
+
+        _currentLevelName = levelName;
     }
+
+    public void UnloadLevel(string levelName)
+    {
+        AsyncOperation ao = SceneManager.UnloadSceneAsync(levelName);
+        ao.completed += OnUnloadOperationComplete;
+    }
+
+    #endregion
+
+    #region Game Loop
+    void UpdateState(GameState state)
+    {
+        GameState previousGameState = _currentGameState;
+        _currentGameState = state;
+
+        switch (CurrentGameState)
+        {
+            case GameState.PREGAME:
+                LoadLevel("Main");
+                _playerTotalPoints = 0;
+                _timeLeft = maxTime;
+                break;
+            case GameState.RUNNING:
+                audioSource.Play();
+                if (previousGameState == GameState.PREGAME)
+                {
+                    StartCoroutine("SpawnTarget");
+                    StartCoroutine("TimerCountDown");
+                }
+                break;
+            case GameState.PAUSED:
+                break;
+            case GameState.GAMEOVER:
+                StopAllCoroutines();
+                UnloadLevel(_currentLevelName);
+                audioSource.Stop();
+                audioSource.PlayOneShot(gameOverSound);
+                RemoveRemainingTargets();
+                break;
+            default:
+                break;
+        }
+
+        OnGameStateChanged?.Invoke(_currentGameState, previousGameState);
+
+    }
+
+    public void RestartGame()
+    {
+        UpdateState(GameState.PREGAME);
+    }
+
+    public void ExitGame()
+    {
+        Debug.Log("Exit Game");
+        Application.Quit();
+    }
+
+    #endregion
+
+    #region Coroutines and Spawning Methods
 
     private void SpawnLeftRightSensor()
     {
@@ -90,9 +153,10 @@ public class GameManager : MonoBehaviour
         Instantiate(despawnSensor, spawnSensorPosition, Quaternion.identity);
     }
 
+    // TOOD: Maybe move to MainScene So it won't be necessary to remove remaining Enemies as they will be destroy Unloading the level
     IEnumerator SpawnTarget()
     {
-        while (isGameActive)
+        while (_currentGameState == GameState.RUNNING)
         {
             int direction = spawnDirections[UnityEngine.Random.Range(0, spawnDirections.Length)];
             float spawnXComponent = (ScreenBounds.Width + offScreenXOffset) * direction;
@@ -109,33 +173,48 @@ public class GameManager : MonoBehaviour
 
     IEnumerator TimerCountDown()
     {
-        int timeLeft = maxTime;
+        // Wait one second before starting the timer, so the first target will
+        // be on the screeen when the timer starts.
+        yield return new WaitForSeconds(1);
 
-        while (timeLeft > 0)
+        while (_timeLeft > 0)
         {
-            UIController.UpdateTimerTextElement(timeLeft);
             yield return new WaitForSeconds(1);
-            timeLeft--;
+            _timeLeft--;
         }
 
-        // Just to show the zero
-        UIController.UpdateTimerTextElement(timeLeft);
-
-        GameOver();
+        UpdateState(GameState.GAMEOVER);
     }
 
-    // Stop game logic
-    public void GameOver()
+    #endregion
+
+    #region Event Handlers
+
+    public void HandleStartButtonClicked()
     {
-        GameOverEvent?.Invoke();
-
-        audioSource.Stop();
-        audioSource.PlayOneShot(gameOverSound);
-        
-        isGameActive = false;
-        RemoveRemainingTargets();
+        LoadLevel("Main");
     }
 
+    private void HandlePlayerScorePointsEvent(int pointsToScore)
+    {
+        _playerTotalPoints += pointsToScore;
+    }
+
+    private void OnLoadOperationComplete(AsyncOperation ao)
+    {
+        Debug.Log("Level " + _currentLevelName + " Loaded");
+
+        UpdateState(GameState.RUNNING);
+    }
+
+    void OnUnloadOperationComplete(AsyncOperation ao)
+    {
+        // Clean up level is necessary, go back to main menu
+    }
+
+    #endregion
+
+    #region Helpers
     private void RemoveRemainingTargets()
     {
         GameObject[] enemiesOnScene;
@@ -145,4 +224,8 @@ public class GameManager : MonoBehaviour
             Destroy(enemy.gameObject);
         }
     }
+
+    #endregion
+
+    [System.Serializable] public class EventGameState : UnityEvent<GameState, GameState> { }
 }

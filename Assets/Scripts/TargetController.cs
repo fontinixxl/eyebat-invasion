@@ -7,6 +7,7 @@ public class TargetController : MonoBehaviour
     private float speed = 6.0f;
     private Rigidbody targetRb;
     private bool hasCollided;
+    private bool isHit;
     private int direction;
     private Animator animator;
 
@@ -22,6 +23,7 @@ public class TargetController : MonoBehaviour
 
     void Start()
     {
+        isHit = false;
         hasCollided = false;
         animator = GetComponent<Animator>();
         targetRb = GetComponent<Rigidbody>();
@@ -44,6 +46,7 @@ public class TargetController : MonoBehaviour
         targetRb.useGravity = true;
         // Disable flying animation once the target is hit
         animator.enabled = false;
+        isHit = true;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -57,6 +60,16 @@ public class TargetController : MonoBehaviour
         if (other.gameObject.CompareTag("Sensor"))
         {
             Destroy(gameObject);
+
+            // Do not execute the following code if the toggle feature is off
+            if (!GameManager.Instance.GameOverOnEyeEscapeFeature)
+                return;
+
+            if (!isHit)
+            {
+                GameManager.Instance.GameOver();
+            }
+
         }
     }
 }

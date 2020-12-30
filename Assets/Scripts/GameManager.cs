@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
+public enum GameState { PREGAME, RUNNING, GAMEOVER, PAUSED }
+
 public class GameManager : Singleton<GameManager>
 {
     #region Declarations
-    public enum GameState { PREGAME, RUNNING, GAMEOVER, PAUSED }
 
     public GameObject targetPrefab;
     public GameObject despawnSensor;
@@ -25,19 +26,28 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private float maxSpawnRate = 3;
     private readonly int[] spawnDirections = new int[2] { -1, 1 };
     
-    [SerializeField]private int maxTime = 30;
+    [SerializeField] private int maxTime = 30;
+    // TOOD: Add description to the Editor
+    [SerializeField] private int _timeIncrement = 3;
     private int _timeLeft;
     public int TimeLeft { get { return _timeLeft; } }
     private string _currentLevelName = String.Empty;
+
     private GameState _currentGameState = GameState.PREGAME;
     public GameState CurrentGameState
     {
         get { return _currentGameState; }
         private set { _currentGameState = value; }
     }
-    public EventGameState OnGameStateChanged;
+    [HideInInspector] public EventGameState OnGameStateChanged;
+
     [SerializeField] private int _playerTotalPoints;
-    public int PlayerTotalPoints { get { return _playerTotalPoints; } }
+    [HideInInspector] public int PlayerTotalPoints { get { return _playerTotalPoints; } }
+
+    [Header("DEBUG--> Toggle Features")]
+    public bool TimerBonusFeature;
+    public bool GameOverOnEyeEscapeFeature;
+
 
     #endregion
 
@@ -126,6 +136,11 @@ public class GameManager : Singleton<GameManager>
 
     }
 
+    public void GameOver()
+    {
+        UpdateState(GameState.GAMEOVER);
+    }
+
     public void RestartGame()
     {
         UpdateState(GameState.PREGAME);
@@ -198,6 +213,11 @@ public class GameManager : Singleton<GameManager>
     private void HandlePlayerScorePointsEvent(int pointsToScore)
     {
         _playerTotalPoints += pointsToScore;
+
+        if (TimerBonusFeature == true)
+        {
+            _timeLeft += _timeIncrement;
+        }
     }
 
     private void OnLoadOperationComplete(AsyncOperation ao)

@@ -133,6 +133,22 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6727526947049812531, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 789.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 6727526947049812532, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_Text
+      value: Move the box with Arrow Keys / Use left mouse button to shoot down Aliens
+        / Catch as many as you can!
+      objectReference: {fileID: 0}
+    - target: {fileID: 6727526947473363352, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6727526947749114449, guid: 507d01dcb795f6244a0daf77c82c163d,
         type: 3}
       propertyPath: m_Name
@@ -479,11 +495,14 @@ MonoBehaviour:
   gameOverSound: {fileID: 8300000, guid: b02a1f300efeefa4ab8f3a3c6ebf6e98, type: 3}
   minSpawnRate: 1
   maxSpawnRate: 3
-  maxTime: 30
+  maxTime: 15
+  _timeIncrement: 3
   OnGameStateChanged:
     m_PersistentCalls:
       m_Calls: []
   _playerTotalPoints: 0
+  TimerBonusFeature: 1
+  GameOverOnEyeEscapeFeature: 0
 --- !u!4 &1438680680
 Transform:
   m_ObjectHideFlags: 0

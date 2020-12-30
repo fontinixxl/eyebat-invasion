@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.CurrentGameState == GameManager.GameState.RUNNING)
+        if (GameManager.Instance.CurrentGameState == GameState.RUNNING)
         {
             MovePlayer();
         }
@@ -57,11 +57,6 @@ public class PlayerController : MonoBehaviour
     {
         dirtParticleLeft.Stop();
         dirtParticleRight.Stop();
-    }
-
-    private void GameManager_GameOverEvent()
-    {
-        StopDirtParticles();
     }
 
     private void OnTriggerEnter(Collider other)

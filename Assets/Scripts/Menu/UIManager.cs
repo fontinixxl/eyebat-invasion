@@ -20,23 +20,23 @@ public class UIManager : Singleton<UIManager>
         GameManager.Instance.OnGameStateChanged.AddListener(HandleGameStateChanged);
     }
 
-    private void HandleGameStateChanged(GameManager.GameState currentState, GameManager.GameState previousState)
+    private void HandleGameStateChanged(GameState currentState, GameState previousState)
     {
         // ENTERING "RUNNING" FROM "PREGAME" STATE
-        if (previousState == GameManager.GameState.PREGAME &&
-            currentState == GameManager.GameState.RUNNING)
+        if (previousState == GameState.PREGAME &&
+            currentState == GameState.RUNNING)
         {
             SetGameObjectActive(_hudController.gameObject, true);
             SetGameObjectActive(_mainMenu.gameObject, false);
         }
         // ENTERING "GAME OVER" FROM ANY STATE
-        if (currentState == GameManager.GameState.GAMEOVER)
+        if (currentState == GameState.GAMEOVER)
         {
             SetGameObjectActive(_gameOverMenu.gameObject, true);
             SetGameObjectActive(_hudController.gameObject, false);
         }
         // LEAVING "GAME OVER" FROM ANY STATE
-        if (previousState == GameManager.GameState.GAMEOVER)
+        if (previousState == GameState.GAMEOVER)
         {
             SetGameObjectActive(_gameOverMenu.gameObject, false);
             SetGameObjectActive(_mainMenu.gameObject, true);

@@ -13,11 +13,11 @@ public class OnHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private void Start()
     {
         textButton = GetComponentInChildren<Text>();
+        previousColor = textButton.color;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        previousColor = textButton.color;
         textButton.color = redish; //Color.red; //Or however you do your color
         textButton.fontStyle = FontStyle.Bold;
     }

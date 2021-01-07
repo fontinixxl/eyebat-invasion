@@ -3,8 +3,10 @@
 public class TargetController : MonoBehaviour
 {
     public AudioClip hitSound;
+    public Texture2D targetCursor;
     [SerializeField]
     private float speed = 6.0f;
+
     private Rigidbody targetRb;
     private bool hasCollided;
     private bool isHit;
@@ -39,9 +41,24 @@ public class TargetController : MonoBehaviour
         }
     }
 
+    private void OnMouseEnter()
+    {
+        if (!isHit)
+            Cursor.SetCursor(targetCursor, Vector2.zero, CursorMode.Auto);
+    }
+
+    private void OnMouseExit()
+    {
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+    }
+
     // Once the target is hit, enable gravity so it will start falling down
     private void OnMouseDown()
     {
+        // Return if the target has been already hit
+        if (isHit)
+            return;
+
         GameManager.Instance.AudioSource.PlayOneShot(hitSound, 1f);
         targetRb.useGravity = true;
         // Disable flying animation once the target is hit

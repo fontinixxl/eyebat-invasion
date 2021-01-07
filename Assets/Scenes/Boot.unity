@@ -121,6 +121,54 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &169345924
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 169345926}
+  - component: {fileID: 169345925}
+  m_Layer: 0
+  m_Name: MouseManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &169345925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169345924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7ffd8987424c9a48ad3d702191a063c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickableLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  pointer: {fileID: 2800000, guid: fc2ffb84ab0ebea4b9cd5e1404abe650, type: 3}
+  target: {fileID: 2800000, guid: 84c8d0b60e391424ebf573d176e45bbf, type: 3}
+--- !u!4 &169345926
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169345924}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 430.3967, y: 1.1139474, z: -2.7672234}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &507343390
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -128,6 +176,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6727526946862863278, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.000044822693
+      objectReference: {fileID: 0}
     - target: {fileID: 6727526947026866407, guid: 507d01dcb795f6244a0daf77c82c163d,
         type: 3}
       propertyPath: m_IsActive
@@ -136,13 +189,63 @@ PrefabInstance:
     - target: {fileID: 6727526947049812531, guid: 507d01dcb795f6244a0daf77c82c163d,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 789.35
+      value: 774.73206
+      objectReference: {fileID: 0}
+    - target: {fileID: 6727526947049812531, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6727526947049812532, guid: 507d01dcb795f6244a0daf77c82c163d,
         type: 3}
       propertyPath: m_Text
       value: Move the box with Arrow Keys / Use left mouse button to shoot down Aliens
         / Catch as many as you can!
+      objectReference: {fileID: 0}
+    - target: {fileID: 6727526947072777299, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6727526947323329422, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 47.199997
+      objectReference: {fileID: 0}
+    - target: {fileID: 6727526947323329422, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6727526947323329422, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6727526947323329422, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6727526947323329422, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6727526947323329422, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6727526947323329422, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -612.76904
+      objectReference: {fileID: 0}
+    - target: {fileID: 6727526947323329422, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -401.70056
       objectReference: {fileID: 0}
     - target: {fileID: 6727526947473363352, guid: 507d01dcb795f6244a0daf77c82c163d,
         type: 3}
@@ -263,6 +366,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6727526947821710493, guid: 507d01dcb795f6244a0daf77c82c163d,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.000005722046
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 507d01dcb795f6244a0daf77c82c163d, type: 3}
@@ -502,7 +610,7 @@ MonoBehaviour:
       m_Calls: []
   _playerTotalPoints: 0
   TimerBonusFeature: 1
-  GameOverOnEyeEscapeFeature: 0
+  GameOverOnEyeEscapeFeature: 1
 --- !u!4 &1438680680
 Transform:
   m_ObjectHideFlags: 0

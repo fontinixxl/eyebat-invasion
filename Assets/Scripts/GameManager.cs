@@ -48,7 +48,6 @@ public class GameManager : Singleton<GameManager>
     public bool TimerBonusFeature;
     public bool GameOverOnEyeEscapeFeature;
 
-
     #endregion
 
     #region Initializations

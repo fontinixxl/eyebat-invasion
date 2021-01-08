@@ -1,12 +1,24 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class HUDController : MonoBehaviour
 {
+    public Animator eyeAnimator;
     [SerializeField] private Text scoreText;
     [SerializeField] private Text timerText;
+
+    private void Start()
+    {
+        PlayerController.ScorePointsEvent += ReactToPlayerScorePointsEvent;
+    }
+
+    private void ReactToPlayerScorePointsEvent(int points)
+    {
+        eyeAnimator.SetTrigger("Jump");
+    }
 
     private void LateUpdate()
     {

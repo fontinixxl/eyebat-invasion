@@ -7,17 +7,31 @@ using UnityEngine.UI;
 public class HUDController : MonoBehaviour
 {
     public Animator eyeAnimator;
+    public GameObject extraTimeText;
+
+    private Animator extraTimeTextAnimator;
     [SerializeField] private Text scoreText;
     [SerializeField] private Text timerText;
 
     private void Start()
     {
+        extraTimeText.SetActive(false);
+        extraTimeTextAnimator = GetComponent<Animator>();
+        extraTimeTextAnimator.enabled = false;
         PlayerController.ScorePointsEvent += ReactToPlayerScorePointsEvent;
     }
 
     private void ReactToPlayerScorePointsEvent(int points)
     {
         eyeAnimator.SetTrigger("Jump");
+        extraTimeText.SetActive(true);
+        extraTimeTextAnimator.enabled = true;
+    }
+
+    public void OnExtraTimeTextAnimFinished()
+    {
+        extraTimeTextAnimator.enabled = false;
+        extraTimeText.SetActive(false);
     }
 
     private void LateUpdate()

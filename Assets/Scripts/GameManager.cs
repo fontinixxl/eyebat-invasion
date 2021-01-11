@@ -119,6 +119,7 @@ public class GameManager : Singleton<GameManager>
                 }
                 break;
             case GameState.PAUSED:
+                // TODO: Decide whether to implement
                 break;
             case GameState.GAMEOVER:
                 StopAllCoroutines();

@@ -68,6 +68,7 @@ public class PlayerController : MonoBehaviour
 
         ScorePointsEvent?.Invoke(pointsToScore);
 
-        Destroy(other.gameObject);
+        // As the collider is attached to a child component, we need to delete the parent to remove it from scene
+        Destroy(other.gameObject.transform.parent.gameObject);
     }
 }

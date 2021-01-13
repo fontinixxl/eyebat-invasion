@@ -67,8 +67,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitSound: {fileID: 8300000, guid: c461b547b9c507c42b617904589eaa13, type: 3}
-  speed: 6
   targetCursor: {fileID: 2800000, guid: 84c8d0b60e391424ebf573d176e45bbf, type: 3}
+  speed: 6
   scorePoints: 1
 --- !u!54 &4877742354643689560
 Rigidbody:
@@ -84,7 +84,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 8
   m_CollisionDetection: 0
 --- !u!1 &4877742354763956855
 GameObject:

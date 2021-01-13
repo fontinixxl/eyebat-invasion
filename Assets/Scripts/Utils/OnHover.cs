@@ -18,13 +18,13 @@ public class OnHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        textButton.color = redish; //Color.red; //Or however you do your color
+        textButton.color = redish;
         textButton.fontStyle = FontStyle.Bold;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        textButton.color = previousColor; //Or however you do your color
+        textButton.color = previousColor;
         textButton.fontStyle = FontStyle.Normal;
     }
 }

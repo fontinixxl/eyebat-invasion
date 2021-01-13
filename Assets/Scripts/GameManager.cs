@@ -119,7 +119,6 @@ public class GameManager : Singleton<GameManager>
                 }
                 break;
             case GameState.PAUSED:
-                // TODO: Decide whether to implement
                 break;
             case GameState.GAMEOVER:
                 StopAllCoroutines();
@@ -158,8 +157,7 @@ public class GameManager : Singleton<GameManager>
 
     private void SpawnLeftRightSensor()
     {
-        float spawnRangeYPos = spawnRangeYMin + ((spawnRangeYMax - spawnRangeYMin) / 2);
-        Vector3 spawnSensorPosition = new Vector3(ScreenBounds.Width + offScreenXOffset * 2, spawnRangeYPos,
+        Vector3 spawnSensorPosition = new Vector3(ScreenBounds.Width + offScreenXOffset * 1.8f, 0,
             despawnSensor.transform.position.z);
         // Spawn right sensor
         Instantiate(despawnSensor, spawnSensorPosition, Quaternion.identity);
@@ -168,7 +166,7 @@ public class GameManager : Singleton<GameManager>
         Instantiate(despawnSensor, spawnSensorPosition, Quaternion.identity);
     }
 
-    // TOOD: Maybe move to MainScene So it won't be necessary to remove remaining Enemies as they will be destroy Unloading the level
+    // TOOD: Maybe move to MainScene So it won't be necessary to remove remaining Enemies as they will be destroid unloading the level
     IEnumerator SpawnTarget()
     {
         while (_currentGameState == GameState.RUNNING)

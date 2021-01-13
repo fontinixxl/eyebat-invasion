@@ -29,7 +29,7 @@ public class TargetController : MonoBehaviour
         hasCollided = false;
         animator = GetComponent<Animator>();
         targetRb = GetComponent<Rigidbody>();
-        // Adjust direction so the target allways go towards the playGround (camera)
+        // Adjust direction so the target allways go towards the middle
         direction = transform.position.x > 0 ? -1: 1;
     }
 
@@ -61,6 +61,7 @@ public class TargetController : MonoBehaviour
 
         GameManager.Instance.AudioSource.PlayOneShot(hitSound, 1f);
         targetRb.useGravity = true;
+
         // Disable flying animation once the target is hit
         animator.enabled = false;
         isHit = true;
@@ -78,7 +79,7 @@ public class TargetController : MonoBehaviour
         {
             Destroy(gameObject);
 
-            // Do not execute the following code if the toggle feature is off
+            // Do not execute the following code if the toggle feature is turned off
             if (!GameManager.Instance.GameOverOnEyeEscapeFeature)
                 return;
 

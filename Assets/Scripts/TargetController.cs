@@ -2,7 +2,6 @@
 
 public class TargetController : MonoBehaviour
 {
-    public AudioClip hitSound;
     public Texture2D targetCursor;
     [SerializeField]
     private float speed = 6.0f;
@@ -59,7 +58,7 @@ public class TargetController : MonoBehaviour
         if (isHit)
             return;
 
-        GameManager.Instance.AudioSource.PlayOneShot(hitSound, 1f);
+        SoundManager.Instance.PlaySoundEffect(SoundEffect.EnemyHit);
         targetRb.useGravity = true;
 
         // Disable flying animation once the target is hit

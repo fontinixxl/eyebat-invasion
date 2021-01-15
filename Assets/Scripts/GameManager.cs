@@ -13,10 +13,6 @@ public class GameManager : Singleton<GameManager>
     public GameObject targetPrefab;
     public GameObject despawnSensor;
 
-    private AudioSource audioSource;
-    public AudioSource AudioSource { get { return audioSource; } }
-    public AudioClip gameOverSound;
-
     private float spawnRangeYMin;
     private float spawnRangeYMax;
     // Offset distance off-screen on the X coordinate where the enemy will be spawning
@@ -61,8 +57,6 @@ public class GameManager : Singleton<GameManager>
     void Start()
     {
         DontDestroyOnLoad(gameObject);
-
-        audioSource = GetComponent<AudioSource>();
 
         PlayerController.ScorePointsEvent += HandlePlayerScorePointsEvent;
 
@@ -111,7 +105,9 @@ public class GameManager : Singleton<GameManager>
                 _timeLeft = maxTime;
                 break;
             case GameState.RUNNING:
-                audioSource.Play();
+                if (!SoundManager.Instance.SoundFXSource.isPlaying)
+                    SoundManager.Instance.SoundFXSource.Play();
+
                 if (previousGameState == GameState.PREGAME)
                 {
                     StartCoroutine("SpawnTarget");
@@ -123,8 +119,10 @@ public class GameManager : Singleton<GameManager>
             case GameState.GAMEOVER:
                 StopAllCoroutines();
                 UnloadLevel(_currentLevelName);
-                audioSource.Stop();
-                audioSource.PlayOneShot(gameOverSound);
+                
+                SoundManager.Instance.SoundFXSource.Stop();
+                SoundManager.Instance.PlaySoundEffect(SoundEffect.GameOver);
+                
                 RemoveRemainingTargets();
                 break;
             default:

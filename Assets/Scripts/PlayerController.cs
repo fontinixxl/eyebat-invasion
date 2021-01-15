@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public AudioClip enemyCaughtSound;
     public static event Action<int> ScorePointsEvent;
 
     public ParticleSystem dirtParticleRight;
@@ -61,7 +60,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        GameManager.Instance.AudioSource.PlayOneShot(enemyCaughtSound, 1f);
+        SoundManager.Instance.PlaySoundEffect(SoundEffect.EnemyCaught);
 
         // Get the total points this Enemy is worth for; store and display
         int pointsToScore = other.gameObject.GetComponentInParent<TargetController>().ScorePoints;

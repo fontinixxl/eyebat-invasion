@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-public enum GameState { PREGAME, RUNNING, GAMEOVER, PAUSED }
+public enum GameState { PREGAME, RUNNING, GAMEOVER, PAUSED,
+    PRERUNNING
+}
 
 public class GameManager : Singleton<GameManager>
 {
@@ -21,7 +23,7 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private float minSpawnRate = 1;
     [SerializeField] private float maxSpawnRate = 3;
     private readonly int[] spawnDirections = new int[2] { -1, 1 };
-    
+
     [SerializeField] private int maxTime = 30;
     // TOOD: Add description to the Editor
     [SerializeField] private int _timeIncrement = 3;
@@ -37,8 +39,10 @@ public class GameManager : Singleton<GameManager>
     }
     [HideInInspector] public EventGameState OnGameStateChanged;
 
-    [SerializeField] private int _playerTotalPoints;
+    private int _playerTotalPoints;
     [HideInInspector] public int PlayerTotalPoints { get { return _playerTotalPoints; } }
+    private int _highScore;
+    [HideInInspector] public int HighScore { get { return _highScore; } }
 
     [Header("DEBUG--> Toggle Features")]
     public bool TimerBonusFeature;
@@ -67,6 +71,8 @@ public class GameManager : Singleton<GameManager>
         SpawnLeftRightSensor();
 
         OnGameStateChanged.Invoke(GameState.PREGAME, _currentGameState);
+
+        _highScore = 0;
     }
 
     private void LoadLevel(string levelName)
@@ -100,15 +106,15 @@ public class GameManager : Singleton<GameManager>
         switch (CurrentGameState)
         {
             case GameState.PREGAME:
-                LoadLevel("Main");
                 _playerTotalPoints = 0;
                 _timeLeft = maxTime;
+                LoadLevel("Main");
                 break;
             case GameState.RUNNING:
                 if (!SoundManager.Instance.SoundFXSource.isPlaying)
                     SoundManager.Instance.SoundFXSource.Play();
 
-                if (previousGameState == GameState.PREGAME)
+                if (previousGameState == GameState.PRERUNNING)
                 {
                     StartCoroutine("SpawnTarget");
                     StartCoroutine("TimerCountDown");
@@ -119,11 +125,17 @@ public class GameManager : Singleton<GameManager>
             case GameState.GAMEOVER:
                 StopAllCoroutines();
                 UnloadLevel(_currentLevelName);
-                
+
                 SoundManager.Instance.SoundFXSource.Stop();
                 SoundManager.Instance.PlaySoundEffect(SoundEffect.GameOver);
-                
+
                 RemoveRemainingTargets();
+
+                if (_playerTotalPoints > _highScore)
+                {
+                    _highScore = _playerTotalPoints;
+                }
+
                 break;
             default:
                 break;
@@ -133,15 +145,21 @@ public class GameManager : Singleton<GameManager>
 
     }
 
-    public void GameOver()
+    public void StartGame()
     {
-        UpdateState(GameState.GAMEOVER);
+        UpdateState(GameState.RUNNING);
     }
 
     public void RestartGame()
     {
         UpdateState(GameState.PREGAME);
     }
+
+    public void GameOver()
+    {
+        UpdateState(GameState.GAMEOVER);
+    }
+
 
     public void ExitGame()
     {
@@ -167,6 +185,8 @@ public class GameManager : Singleton<GameManager>
     // TOOD: Maybe move to MainScene So it won't be necessary to remove remaining Enemies as they will be destroid unloading the level
     IEnumerator SpawnTarget()
     {
+        yield return new WaitForSeconds(1);
+
         while (_currentGameState == GameState.RUNNING)
         {
             int direction = spawnDirections[UnityEngine.Random.Range(0, spawnDirections.Length)];
@@ -184,9 +204,9 @@ public class GameManager : Singleton<GameManager>
 
     IEnumerator TimerCountDown()
     {
-        // Wait one second before starting the timer, so the first target will
+        // Wait 2 second before starting the timer, so the first target will
         // be on the screeen when the timer starts.
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2);
 
         while (_timeLeft > 0)
         {
@@ -218,9 +238,7 @@ public class GameManager : Singleton<GameManager>
 
     private void OnLoadOperationComplete(AsyncOperation ao)
     {
-        Debug.Log("Level " + _currentLevelName + " Loaded");
-
-        UpdateState(GameState.RUNNING);
+        UpdateState(GameState.PRERUNNING);
     }
 
     void OnUnloadOperationComplete(AsyncOperation ao)

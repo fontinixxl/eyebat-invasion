@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class GameOverMenu : MonoBehaviour
@@ -10,6 +7,7 @@ public class GameOverMenu : MonoBehaviour
     public Button ExitButton;
 
     public Text totalScoreText;
+    public Text highScoreText;
 
     private void Start()
     {
@@ -31,8 +29,15 @@ public class GameOverMenu : MonoBehaviour
         totalScoreText.text = "SCORE: " + text;
     }
 
+    public void UpdateHighScoreText(string text)
+    {
+        highScoreText.text = "HIGH SCORE: " + text;
+    }
+
     private void OnEnable()
     {
         UpdateTotalScoreText(GameManager.Instance.PlayerTotalPoints.ToString());
+        UpdateHighScoreText(GameManager.Instance.HighScore.ToString());
+
     }
 }

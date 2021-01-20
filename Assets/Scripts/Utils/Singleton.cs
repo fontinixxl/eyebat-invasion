@@ -17,15 +17,15 @@ public class Singleton<T> : MonoBehaviour where T : Singleton<T>
     {
         if (instance != null && instance != this)
         {
-            Debug.LogError("[Singleton] Trying to instantiate a second instance of a singleton class."); 
+            Debug.LogError("[Singleton] Trying to instantiate a second instance of a singleton class.");
             Destroy(this);
         }
         else
         {
-            instance = (T) this;
+            instance = (T)this;
         }
     }
-    
+
     protected virtual void OnDestroy()
     {
         if (instance == this)

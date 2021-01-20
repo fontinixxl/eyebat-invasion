@@ -29,7 +29,7 @@ public class TargetController : MonoBehaviour
         animator = GetComponent<Animator>();
         targetRb = GetComponent<Rigidbody>();
         // Adjust direction so the target allways go towards the middle
-        direction = transform.position.x > 0 ? -1: 1;
+        direction = transform.position.x > 0 ? -1 : 1;
     }
 
     void FixedUpdate()

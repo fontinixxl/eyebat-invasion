@@ -13,8 +13,8 @@ public class ScreenBounds : MonoBehaviour
     public static float Top { get { return bounds.y - spriteBorder; } }
     public static float Bottom { get { return -bounds.y + spriteBorder; } }
 
-    public static float Width { get {return bounds.x; } }
-    public static float Height { get {return bounds.y; } }
+    public static float Width { get { return bounds.x; } }
+    public static float Height { get { return bounds.y; } }
 
     // Start is called before the first frame update
     private void Start()
@@ -44,7 +44,7 @@ public class ScreenBounds : MonoBehaviour
     }
     public static Vector2 GetRandomPositionFullScreen()
     {
-        float targetVerticalPos = Random.Range(-bounds.y , bounds.y);
+        float targetVerticalPos = Random.Range(-bounds.y, bounds.y);
         float targetHorizontalPos = Random.Range(-bounds.x, bounds.x);
 
         return new Vector2(targetHorizontalPos, targetVerticalPos);

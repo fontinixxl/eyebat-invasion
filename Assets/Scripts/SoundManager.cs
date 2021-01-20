@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class SoundManager : Singleton<SoundManager> 
+public class SoundManager : Singleton<SoundManager>
 {
     public List<SoundFXDefinition> SoundFX;
     private AudioSource _soundFXSource;

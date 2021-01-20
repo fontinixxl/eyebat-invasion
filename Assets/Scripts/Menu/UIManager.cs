@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -10,25 +8,50 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private MainMenu _mainMenu;
     [SerializeField] private GameOverMenu _gameOverMenu;
     [SerializeField] private HUDController _hudController;
-
+    [SerializeField] private GameObject _instructions;
     #endregion
 
     void Start()
     {
         DontDestroyOnLoad(gameObject);
-
         GameManager.Instance.OnGameStateChanged.AddListener(HandleGameStateChanged);
+
+        SetGameObjectActive(_mainMenu.gameObject, true);
+        SetGameObjectActive(_hudController.gameObject, false);
+        SetGameObjectActive(_gameOverMenu.gameObject, false);
+        SetGameObjectActive(_instructions, false);
+    }
+
+    private void Update()
+    {
+        if (GameManager.Instance.CurrentGameState != GameState.PRERUNNING)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            GameManager.Instance.StartGame();
+        }
     }
 
     private void HandleGameStateChanged(GameState currentState, GameState previousState)
     {
-        // ENTERING "RUNNING" FROM "PREGAME" STATE
+
+        // ENTERING "PRERUNNING" FROM "PREGAME" STATE
         if (previousState == GameState.PREGAME &&
+            currentState == GameState.PRERUNNING)
+        {
+            SetGameObjectActive(_mainMenu.gameObject, false);
+            _instructions.SetActive(true);
+        }
+
+        // ENTERING "RUNNING" FROM "PRERUNNING" STATE
+        if (previousState == GameState.PRERUNNING &&
             currentState == GameState.RUNNING)
         {
+            _instructions.SetActive(false);
             SetGameObjectActive(_hudController.gameObject, true);
-            SetGameObjectActive(_mainMenu.gameObject, false);
         }
+
         // ENTERING "GAME OVER" FROM ANY STATE
         if (currentState == GameState.GAMEOVER)
         {

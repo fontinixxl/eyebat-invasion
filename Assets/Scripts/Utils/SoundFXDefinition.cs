@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [System.Serializable]
-public struct SoundFXDefinition 
+public struct SoundFXDefinition
 {
     public SoundEffect Effect;
     public AudioClip Clip;

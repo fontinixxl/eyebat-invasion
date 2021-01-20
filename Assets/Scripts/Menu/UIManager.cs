@@ -9,6 +9,8 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private GameOverMenu _gameOverMenu;
     [SerializeField] private HUDController _hudController;
     [SerializeField] private GameObject _instructions;
+    [SerializeField] private GameObject _credits;
+
     #endregion
 
     void Start()
@@ -20,6 +22,7 @@ public class UIManager : Singleton<UIManager>
         SetGameObjectActive(_hudController.gameObject, false);
         SetGameObjectActive(_gameOverMenu.gameObject, false);
         SetGameObjectActive(_instructions, false);
+        SetGameObjectActive(_credits, false);
     }
 
     private void Update()
@@ -69,5 +72,17 @@ public class UIManager : Singleton<UIManager>
     public void SetGameObjectActive(GameObject gameObject, bool active)
     {
         gameObject.SetActive(active);
+    }
+
+    public void HandleCreditsButtonClicked()
+    {
+        SetGameObjectActive(_mainMenu.gameObject, false);
+        SetGameObjectActive(_credits, true);
+    }
+
+    public void HandleMainButtonClicked()
+    {
+        SetGameObjectActive(_credits, false);
+        SetGameObjectActive(_mainMenu.gameObject, true);
     }
 }

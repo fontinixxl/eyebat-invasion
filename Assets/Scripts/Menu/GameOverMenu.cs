@@ -8,6 +8,7 @@ public class GameOverMenu : MonoBehaviour
 
     public Text totalScoreText;
     public Text highScoreText;
+    public Text newHighScoreText;
 
     private void Start()
     {
@@ -37,7 +38,16 @@ public class GameOverMenu : MonoBehaviour
     private void OnEnable()
     {
         UpdateTotalScoreText(GameManager.Instance.PlayerTotalPoints.ToString());
-        UpdateHighScoreText(GameManager.Instance.HighScore.ToString());
-
+        if (GameManager.Instance.IsHighScore)
+        {
+            newHighScoreText.enabled = true;
+            highScoreText.enabled = false;
+        }
+        else
+        {
+            newHighScoreText.enabled = false;
+            highScoreText.enabled = true;
+            UpdateHighScoreText(GameManager.Instance.HighScore.ToString());
+        }
     }
 }

@@ -43,6 +43,9 @@ public class GameManager : Singleton<GameManager>
     [HideInInspector] public int PlayerTotalPoints { get { return _playerTotalPoints; } }
     private int _highScore;
     [HideInInspector] public int HighScore { get { return _highScore; } }
+    private bool _isHighScore;
+    [HideInInspector] public bool IsHighScore { get { return _isHighScore; } }
+
 
     [Header("DEBUG--> Toggle Features")]
     public bool TimerBonusFeature;
@@ -134,6 +137,11 @@ public class GameManager : Singleton<GameManager>
                 if (_playerTotalPoints > _highScore)
                 {
                     _highScore = _playerTotalPoints;
+                    _isHighScore = true;
+                }
+                else
+                {
+                    _isHighScore = false;
                 }
 
                 break;
